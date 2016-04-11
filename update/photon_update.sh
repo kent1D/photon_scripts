@@ -1,11 +1,13 @@
 #!/bin/sh
 # Bash update script of Photon geocoder Indexes
+# Version 0.0.1
 #
 # Dependences : 
 # - wget (to retrieve the updated file, should be by default on debian, not curl)
 # - pbzip2 or bzip2 to uncompress retrieved file
 # - python to retrieve Index creation date from elastic search json API
-
+# - the photon start-stop script to restart photon easily
+#
 WGET=$(which wget)
 PYTHON=$(which python)
 BZIP=$(which pbzip2)
@@ -17,6 +19,11 @@ USER="www-data"
 GROUP="www-data"
 
 # Include defaults if present
+# It permits to modify the variables :
+# - URL_DL_PHOTON : Url where to download the indexes
+# - ELASTIC_PORT : the local port of elastic search
+# - PHOTON_DIR : the directory where your photon db is stored
+# - USER / GROUP : Unix user and group owners of the files 
 if [ -r /etc/default/photon_update ]; then
 	. /etc/default/photon_update
 fi
@@ -54,6 +61,10 @@ if [ "$WGET" ] && [ -x $WGET ]; then
 					cd $PHOTON_DIR
 					wget -O - http://download1.graphhopper.com/public/photon-db-latest.tar.bz2 | $BZIP -cd | tar x
 					chown -Rvf $USER:$GROUP photon_data
+					sudo service photon restart
+				else
+					echo "Your Photon's Elasticsearch Indexes seem to be up to date"
+					exit 1;
 				fi
 			else
 				echo "Elastic search doesn't seem to be reachable on port $ELASTIC_PORT, are you sure Photon is up and running ?"
