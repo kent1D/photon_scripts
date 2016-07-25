@@ -1,6 +1,6 @@
 #!/bin/sh
 # Bash update script of Photon geocoder Indexes
-# Version 0.0.1
+# Version 0.0.2
 #
 # Dependences : 
 # - wget (to retrieve the updated file, should be by default on debian, not curl)
@@ -59,6 +59,11 @@ if [ "$WGET" ] && [ -x $WGET ]; then
 				if [ ${DATE_URL} -ge ${INDEX_DATE} ]; then
 					echo "Update of the Photon's Elastic Search indexes"
 					cd $PHOTON_DIR
+					if [ ! -d $PHOTON_DIR/photon_data_save ]; then
+						mkdir -p $PHOTON_DIR/photon_data_save/
+					fi
+					rm -Rvf $PHOTON_DIR/photon_data_save/*
+					mv $PHOTON_DIR/photon_data/* $PHOTON_DIR/photon_data_save
 					wget -O - http://download1.graphhopper.com/public/photon-db-latest.tar.bz2 | $BZIP -cd | tar x
 					chown -Rvf $USER:$GROUP photon_data
 					sudo service photon restart

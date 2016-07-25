@@ -15,3 +15,17 @@ The script ```photon_update.sh``` in the ```update/``` folder is an updater for 
 It can be used manually launching the script directly via CLI but also in crontab.
 
 We recommend to launch it once a week thrue a crontab job (the Photon's Elasticsearche indexes are updated on [the source repository once a week](https://github.com/komoot/photon#installation)).
+
+### Changelog
+
+### Versions 0.0.x
+
+#### Version 0.0.2 (2016-07-25)
+
+Since the files in the database are different from an export to an other, the new downloaded files didn't replace the former ones.
+
+Now we make a backup of the former database (in `/var/www/photon/photon_data_save`) before upgrading it.
+
+#### Version 0.0.1
+
+The original version of the script
